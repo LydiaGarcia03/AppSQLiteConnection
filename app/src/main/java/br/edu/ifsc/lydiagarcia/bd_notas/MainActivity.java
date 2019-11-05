@@ -7,10 +7,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     SQLiteDatabase db;
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db = openOrCreateDatabase("mydb", MODE_PRIVATE, null);
-
 
         db.execSQL("CREATE TABLE IF NOT EXISTS notas(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -43,11 +47,15 @@ public class MainActivity extends AppCompatActivity {
 
         String id, titulo, texto;
 
+        ArrayList<String> arrayList = new ArrayList<>();
+
         while(!cursor.isAfterLast()){
 
             id = cursor.getString(cursor.getColumnIndex("id"));
             titulo = cursor.getString(cursor.getColumnIndex("titulo"));
             texto = cursor.getString(cursor.getColumnIndex("texto"));
+
+            arrayList.add(titulo);
 
             Log.d("tabelaNotas", id + " " + titulo + " " + texto);
 
@@ -55,7 +63,27 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        listView.findViewById(R.id.list_view);
 
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                getApplicationContext(),
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1,
+                arrayList
+        );
+
+        listView.setAdapter(adapter);
+
+        /*
+        * Anotações para ListViews e RecyclerViews
+        *
+        * DataSet é o conjunto de dados, que no caso é o cursor
+        *
+        * Para o sistema saber onde colocar cada item na activity, usa-se o Adapter
+        * O Adapter, com o DataSet e o Template, consegue rearranjar no ListView
+        *
+        * */
 
     }
 }
